@@ -56,7 +56,7 @@ func (s *FixedString) String() string {
 func (p *Parser) Parse() (string, bool) {
 	var build strings.Builder
 	state := 0
-	symbol := NewFixedString(10)
+	symbol := NewFixedString(20)
 	endsymbol := ";"
 	for {
 		var c rune
@@ -95,7 +95,8 @@ func (p *Parser) Parse() (string, bool) {
 				continue
 			}
 
-			if endsymbol == ";" && strings.HasSuffix(symbol.String(), "DELIMITER") {
+			symbolstr := symbol.String()
+			if endsymbol == ";" && (strings.HasSuffix(symbolstr, "DELIMITER") || strings.HasSuffix(symbolstr, "RETURNS TRIGGER AS")) {
 				state = 40
 				continue
 			}
@@ -135,16 +136,20 @@ func (p *Parser) Parse() (string, bool) {
 				continue
 			}
 		case 40:
+			build.WriteString(char)
 			if char != " " {
 				endsymbol = char
 				state = 41
 				continue
 			}
 		case 41:
+			build.WriteString(char)
 			if char == "\n" || char == " " {
 				state = 1
 				continue
 			}
+
+			endsymbol += char
 		}
 
 	}
