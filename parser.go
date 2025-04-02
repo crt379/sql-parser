@@ -2,7 +2,6 @@ package sqlparser
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"strings"
 )
@@ -47,9 +46,7 @@ func (s *FixedString) Append(char rune) {
 
 func (s *FixedString) String() string {
 	s.b.Reset()
-	fmt.Printf("si: %d, ei: %d, s: %s\n", s.si, s.ei, string(s.rs))
 	for i := s.si; i < s.ei; i++ {
-		fmt.Printf("i: %d, ", i)
 		s.b.WriteRune(s.rs[i%s.len])
 	}
 
