@@ -142,7 +142,7 @@ func (p *Parser) Parse() (string, bool) {
 			}
 		case 41:
 			if char == "\n" || char == " " {
-				state = 2
+				state = 1
 				continue
 			}
 		}
