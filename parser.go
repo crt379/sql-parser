@@ -98,10 +98,14 @@ func (p *Parser) Parse() (string, bool) {
 				continue
 			}
 
+			if endsymbol == ";" && strings.HasSuffix(symbol.String(), "DELIMITER") {
+				state = 40
+				continue
+			}
+
 			if strings.HasSuffix(symbol.String(), endsymbol) {
 				return build.String(), false
 			}
-
 		case 10:
 			build.WriteString(char)
 			if char == "'" {
@@ -133,19 +137,20 @@ func (p *Parser) Parse() (string, bool) {
 				state = 0
 				continue
 			}
-		default:
-
+		case 40:
+			if char != " " {
+				endsymbol = char
+				state = 41
+				continue
+			}
+		case 41:
+			if char == "\n" || char == " " {
+				state = 2
+				continue
+			}
 		}
 
 	}
 
 	return build.String(), true
 }
-
-// func deleteLastSymbol(str string) string {
-// 	if len(str) <= 1 {
-// 		return ""
-// 	}
-// 	s := str[:len(str)-1]
-// 	return s
-// }
